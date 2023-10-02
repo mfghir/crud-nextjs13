@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 interface Contact {
   id: number;
@@ -15,7 +15,9 @@ const ContactsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const pramas = useParams()
-  console.log("pramas---",pramas);
+  const searchPramas = useSearchParams()
+  console.log("pramas---", pramas);
+  console.log("searchPramas---", searchPramas);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -37,8 +39,8 @@ const ContactsPage = () => {
   };
 
   const handlePagination = (page: number) => {
-    // router.push(`/contacts?page=${page}`, undefined, { shallow: true });
-    router.push(`/?page=${page}`);
+    // router.push(`/?page=${page}`, undefined, { shallow: true });
+    router.push(`/?page=${page}`, undefined);
     setCurrentPage(page);
   };
 
@@ -68,12 +70,15 @@ const ContactsPage = () => {
         ))}
       </ul>
       <div className='flex justify-between items-center'>
-        <button disabled={currentPage === 1} onClick={() => handlePagination(currentPage - 1)}
+        <button
+          disabled={currentPage === 1}
+          onClick={() => handlePagination(currentPage - 1)}
           className={`px-4 py-2 rounded-lg ${currentPage === 1 ? "bg-gray-400" : "bg-blue-200"} `}
-        >
-          prev page
+        >prev page
         </button>
-        <button onClick={() => handlePagination(currentPage + 1)}
+        <button
+          disabled={contacts.length === 0}
+          onClick={() => handlePagination(currentPage + 1)}
           className={`px-4 py-2 rounded-lg ${contacts.length === 0 ? "bg-gray-400" : "bg-blue-200"} `}
         >next page</button>
       </div>
