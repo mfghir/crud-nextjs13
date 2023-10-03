@@ -13,23 +13,87 @@ interface Contact {
 const ContactsPage = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+
   const router = useRouter();
-  const pramas = useParams()
-  const searchPramas = useSearchParams()
-  console.log("pramas---", pramas);
-  console.log("searchPramas---", searchPramas);
+  // const pramas = useParams()
+  // const searchPramas = useSearchParams()
+  // console.log("pramas---", pramas);
+  // console.log("searchPramas---", searchPramas);
 
   useEffect(() => {
-    const fetchContacts = async () => {
-      const response = await fetch(
-        `https://jsonplaceholder.typicode.com/users?_page=${currentPage}&_limit=5`
-      );
-      const data = await response.json();
-      setContacts(data);
-    };
+    fetchData();
+  }, []);
 
-    fetchContacts();
-  }, [currentPage]);
+  const fetchData = async () => {
+    await fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((data) => setContacts(data))
+      .catch((error) => console.log(error));
+  };
+
+
+  const handleCreateUser = async (name: string, email: string) => {
+    await fetch("https://jsonplaceholder.typicode.com/users", {
+      method: "POST",
+      body: JSON.stringify({
+        name: name,
+        email: email
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+      .then((response) => {
+        if (response.status !== 201) {
+          return;
+        } else {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        setContacts((users) => [...users, data]);
+      })
+      .catch((error) => console.log(error));
+  };
+
+
+  const handleEdit = async ({ id, name, phone, email }: Contact) => {
+    await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        name: name,
+        phone: phone,
+        email: email,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+      .then((response) => {
+        if (response.status !== 200) {
+          return;
+        } else {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        // setUsers((users) => [...users, data]);
+        const updatedUsers = contacts.map((user) => {
+          if (user.id === id) {
+            user.name = name;
+            user.phone = phone;
+            user.email = email;
+          }
+
+          return user;
+        });
+
+        setContacts((users) => updatedUsers);
+
+      })
+      .catch((error) => console.log(error));
+  };
+
 
   const handleDelete = async (id: number) => {
     await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
@@ -48,10 +112,16 @@ const ContactsPage = () => {
     <section>
       <div className="flex justify-between items-center">
         <h1 className='font-bold text-center' >User Lists</h1>
-        <Link href={`/create-user`}
+        {/* <Link href={`/create-user`}
           className='bg-orange-500 text-white my-4 px-4 py-2 rounded-lg text-center '
         >Create User
-        </Link>
+        </Link> */}
+
+        <button
+          onClick={() => router.push('/create-user', { handleCreateUser })}
+          className='bg-orange-500 text-white my-4 px-4 py-2 rounded-lg text-center '
+        >Create User
+        </button>
       </div>
 
       <ul className='my-4'>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-const CreateContactPage = (props: any) => {
+const CreateContactPage = ({createUser}) => {
 
   const [data, setData] = useState({
     name: props.dataPost ? props.dataPost.name : "",
