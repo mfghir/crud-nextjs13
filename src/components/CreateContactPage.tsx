@@ -3,17 +3,25 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-const CreateContactPage = ({createUser}) => {
+const CreateContactPage = ({}) => {
+
+  // const [data, setData] = useState({
+  //   name: props.dataPost ? props.dataPost.name : "",
+  //   phone: props.dataPost ? props.dataPost.phone : "",
+  //   email: props.dataPost ? props.dataPost.email : ""
+  // });
 
   const [data, setData] = useState({
-    name: props.dataPost ? props.dataPost.name : "",
-    phone: props.dataPost ? props.dataPost.phone : "",
-    email: props.dataPost ? props.dataPost.email : ""
-  });
-  const handleChange = (e: React.FormEvent) => {
-    // setData(prevState => ({ ...prevState, [e.target?.name]: e.target?.value }))
-    
-  }
+      name : "",
+      phone: "",
+      email: ""
+    });
+    const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+      setData((prevState) => ({
+        ...prevState,
+        [e.currentTarget.name]: e.currentTarget.value,
+      }));
+    };
 
   // const [name, setName] = useState('');
   // const [phone, setPhone] = useState('');
@@ -25,11 +33,11 @@ const CreateContactPage = ({createUser}) => {
 
     await fetch('https://jsonplaceholder.typicode.com/users', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data),
-    }).then((response) => response.json()).then((json) => console.log(json))
+    })
+    .then((response) => response.json())
+    .then((json) => console.log("json",json))
 
     router.push('/');
   };

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useGlobalContext } from './Provider';
 
 interface Contact {
   id: number;
@@ -16,11 +17,13 @@ const EditContactPage = () => {
   const [email, setEmail] = useState('');
 
   const router = useRouter();
-  const {editId} = useParams()
-  // console.log("id",id);
-  // console.log("query",query);
+  const { editId } = useParams()
+
+  const { users, setUsers }=useGlobalContext()
+  // console.log("users---",users);
+
   // console.log("params",params);
-    // const editId  = params.id;
+  // const editId  = params.id;
 
   useEffect(() => {
     const fetchContact = async () => {
@@ -36,13 +39,14 @@ const EditContactPage = () => {
     }
   }, [editId]);
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-   const res = await fetch(`https://jsonplaceholder.typicode.com/users/${editId}`, {
+    const res = await fetch(`https://jsonplaceholder.typicode.com/users/${editId}`, {
       method: 'PUT',
       body: JSON.stringify({
-        id:editId,
+        id: editId,
         name,
         phone,
         email,
@@ -53,7 +57,10 @@ const EditContactPage = () => {
     });
 
     const data = await res.json()
-console.log(data);
+    setUsers(data)
+    console.log("data---", data);
+    // console.log("userData", userData);
+
     router.push('/');
   };
 
@@ -65,7 +72,7 @@ console.log(data);
         <div>
           <label>Name:</label>
           <input type="text" value={name} onChange={(e) => setName(e.target.value)} required
-            className='px-2 py-2 rounded-lg'/>
+            className='px-2 py-2 rounded-lg' />
         </div>
         <div>
           <label>Phone:</label>
