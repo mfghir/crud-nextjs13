@@ -38,6 +38,8 @@ export default async function RootLayout({
           {/* <UserProvider> */}
           {/* <GlobalContextProvider> */}
           {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+
           {/* </GlobalContextProvider> */}
           {/* </UserProvider> */}
         </ReactQueryProvider>

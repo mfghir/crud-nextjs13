@@ -23,7 +23,7 @@
     }
     
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/HomePage.jsx", "src/components/ContactsPage.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/HomePage.jsx", "src/components/ContactsPage.tsx", "src/components/TestEdit.jsx", "src/components/Test.tsx", "src/components/TestCreate.tsx", "src/lib/testApi.js"],
   "exclude": ["node_modules"],
   "types": ["react/next"]
 }
