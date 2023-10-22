@@ -15,8 +15,8 @@ const getUser = async (_, id) => {
 }
 
 const createUser = async ({ id, name, email }) => {
-  const product = { id, name, email }
-  const { data } = await client.post(`/users`, product)
+  const user = { id, name, email }
+  const { data } = await client.post(`/users`, user)
   return data
 }
 

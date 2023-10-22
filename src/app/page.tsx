@@ -2,6 +2,7 @@
 import ContactsPage from '@/components/ContactsPage';
 import HomePage from '@/components/HomePage';
 import { Test } from '@/components/Test';
+import NewTest from '@/components/NewTest';
 import Pagination from '@/components/user/Pagination';
 import UserListPage from '@/components/user/UserListPage';
 
@@ -24,6 +25,7 @@ export default function Home() {
       {/* <HomePage /> */}
       {/* <ContactsPage  /> */}
 <Test />
+{/* <NewTest /> */}
       {/* <UserListPage/>
       <Pagination /> */}
     </main>

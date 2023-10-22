@@ -150,18 +150,10 @@
 
 
 import Link from "next/link";
-
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
-import {
-    useQuery,
-    useQueryClient,
-    QueryClient,
-    QueryClientProvider,
-    useMutation
-} from '@tanstack/react-query'
 
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import {useQuery, useQueryClient, useMutation} from '@tanstack/react-query'
 import { NextPage } from "next";
 
 interface userData {
@@ -172,7 +164,7 @@ interface userData {
 
 
 const fetchUsers = async () => {
-    return await axios.get("https://jsonplaceholder.typicode.com/users")
+    return await axios.get("https://652e19eff9afa8ef4b280a1d.mockapi.io/list/kdramalist")
         .then((res) => res.data)
         .catch((err) => {
             console.log("err", err);
@@ -196,7 +188,7 @@ export const Test: NextPage = () => {
 
     //creating the user
     const { mutate: addNewUser } = useMutation((data: any) => {
-        return axios.post("https://jsonplaceholder.typicode.com/users", data)
+        return axios.post("https://652e19eff9afa8ef4b280a1d.mockapi.io/list/kdramalist", data)
     }, {
         onSuccess: () => {
             queryClient.invalidateQueries(['list'])
@@ -205,31 +197,31 @@ export const Test: NextPage = () => {
     })
 
     //updating the user
-    const { mutate: updateUser } = useMutation((updatedData: any) => {
-        return axios.put(`https://jsonplaceholder.typicode.com/users/${id}`, updatedData)
-    }, {
-        onMutate: async (updateData) => {
-            await queryClient.cancelQueries(['list']);
-            const previousUser = queryClient.getQueryData(["list"])
-            queryClient.setQueryData(['list'], updateData)
-            return { previousUser, updateData }
-        },
-        // If the mutation fails, using the context to fall back to previous data
-        onError: (context: any) => {
-            queryClient.setQueryData(['list'], context.previousUser)
-        },
+    // const { mutate: updateUser } = useMutation((updatedData: any) => {
+    //     return axios.put(`https://652e19eff9afa8ef4b280a1d.mockapi.io/list/kdramalist/${id}`, updatedData)
+    // }, {
+    //     onMutate: async (updateData) => {
+    //         await queryClient.cancelQueries(['list']);
+    //         const previousUser = queryClient.getQueryData(["list"])
+    //         queryClient.setQueryData(['new'], updateData)
+    //         return { previousUser, updateData }
+    //     },
+    //     // If the mutation fails, using the context to fall back to previous data
+    //     onError: (context: any) => {
+    //         queryClient.setQueryData(['list'], context.previousUser)
+    //     },
 
-        //finally showing the secess message and refetching the data again
-        onSettled: () => {
-            queryClient.invalidateQueries(['list'])
-            alert('Data Edited')
+    //     //finally showing the secess message and refetching the data again
+    //     onSettled: () => {
+    //         queryClient.invalidateQueries(['list'])
+    //         alert('Data Edited')
 
-        },
-    })
+    //     },
+    // })
 
     //deleting the user
     const { mutate: deleteUser } = useMutation((id: any) => {
-        return axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`)
+        return axios.delete(`https://652e19eff9afa8ef4b280a1d.mockapi.io/list/kdramalist/${id}`)
     }, {
         onSuccess: () => {
             queryClient.invalidateQueries(['list'])
@@ -238,36 +230,33 @@ export const Test: NextPage = () => {
     })
 
 
-    if (isLoading) {
-        return (
-            <h1>Data is Loading</h1>
-        )
-    }
+    if (isLoading) return <h1>Data is Loading</h1>
+        
 
     const addUserHandler = () => {
         addNewUser({
-            "id": crypto.randomUUID(),
+            // "id": crypto.randomUUID(),
             "name": name,
             "email": email
         })
         clear()
     }
 
-    const getUpdateData = (user: userData) => {
-        setName(user.name)
-        setEmail(user.email)
-        setId(user.id)
-        setShow(true)
-    }
+    // const getUpdateData = (user: userData) => {
+    //     setName(user.name)
+    //     setEmail(user.email)
+    //     setId(user.id)
+    //     setShow(true)
+    // }
 
-    const updateUserHandler = () => {
-        updateUser({
-            "name": name,
-            "email": email
-        })
-        setShow(false)
-        clear()
-    }
+    // const updateUserHandler = () => {
+    //     updateUser({
+    //         "name": name,
+    //         "email": email
+    //     })
+    //     setShow(false)
+    //     clear()
+    // }
 
     const deleteHandler = (user: userData) => {
         deleteUser(user.id)
@@ -307,7 +296,11 @@ export const Test: NextPage = () => {
                                     <td className='p-2 text-[13px]'>{user.email}</td>
                                     <td className='p-2'>
                                         <div>
-                                            <button className='bg-blue-400 m-2 p-2 px-4 rounded-md font-semibold text-[12px]' onClick={() => getUpdateData(user)} >Edit</button>
+                                        <Link href={`/edit/${user.id}`}>
+                                            <button className='bg-blue-400 m-2 p-2 px-4 rounded-md font-semibold text-[12px]' 
+                                            // onClick={() => getUpdateData(user)} 
+                                            >Edit</button>
+                                        </Link>
                                             <button className='bg-red-400 m-2 p-2 px-3 rounded-md font-semibold text-[12px]' onClick={() => deleteHandler(user)}>Delete</button>
                                         </div>
                                     </td>
@@ -323,14 +316,11 @@ export const Test: NextPage = () => {
                         <input required className='m-2 p-2 rounded-lg' type="text" placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} />
                         <input required className='m-2 p-2 rounded-lg' type="text" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} />
 
-                        {
-                            show
-                                ?
-                                <button className='bg-blue-300 m-1 p-2 text-[12px] font-semibold rounded-lg text-slate-600' onClick={updateUserHandler} >Update User</button>
-                                :
-                                <button className='bg-green-300 m-1 p-2 text-[12px] font-semibold rounded-lg text-slate-600' onClick={addUserHandler} >Add User</button>
-                        }
-
+                        {/* {show? */}
+                            {/* <button className='bg-blue-300 m-1 p-2 text-[12px] font-semibold rounded-lg text-slate-600' onClick={updateUserHandler} >Update User</button> */}
+                            {/* : */}
+                            <button className='bg-green-300 m-1 p-2 text-[12px] font-semibold rounded-lg text-slate-600' onClick={addUserHandler} >Add User</button>
+                        {/* } */}
                     </div>
 
                 </div>
@@ -342,7 +332,6 @@ export const Test: NextPage = () => {
     )
 
 };
-
 
 
 
