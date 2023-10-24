@@ -21,10 +21,11 @@ export default function Home() {
 
 
   return (
-    <main className="flex min-h-screen items-center justify-between p-24 bg-gray-200">
+    <main className="min-h-screen  p-8 lg:20 bg-gray-200">
       {/* <HomePage /> */}
       {/* <ContactsPage  /> */}
 <Test />
+
 {/* <NewTest /> */}
       {/* <UserListPage/>
       <Pagination /> */}
