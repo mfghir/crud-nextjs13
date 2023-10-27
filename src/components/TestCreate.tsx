@@ -113,7 +113,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useRef } from "react"
 import axios from 'axios';
-import { createUser } from '@/lib/testQusery';
+import { createUser } from '@/lib/testQuery';
 // import { createUser } from "./api/posts"
 // import Post from "./Post"
 

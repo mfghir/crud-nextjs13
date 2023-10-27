@@ -20,21 +20,22 @@ import toast from 'react-hot-toast'
 interface userData {
     id: string,
     name: string,
-    email: string
+    email: string,
+    phone: string
 }
 
 
 
 export default function TestAdd() {
     const [name, setName] = useState('');
-    // const [phone, setPhone] = useState('');
+    const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
 
     const router = useRouter();
     const queryClient = useQueryClient()
 
     const { mutate: addNewUser, isError, isLoading } = useMutation((data: any) => {
-        return axios.post("https://652e19eff9afa8ef4b280a1d.mockapi.io/list/kdramalist", data)
+        return axios.post("https://652e19eff9afa8ef4b280a1d.mockapi.io/list/userlist", data)
     }, {
         onSuccess: () => {
             queryClient.invalidateQueries(['list'])
@@ -47,10 +48,12 @@ export default function TestAdd() {
     const addUserHandler = () => {
         setName(name)
         setEmail(email)
+        setPhone(phone)
         
         addNewUser({
             "name": name,
-            "email": email
+            "email": email,
+            "phone": phone
         })
         router.push('/')
 
@@ -73,11 +76,18 @@ export default function TestAdd() {
             <br />
             <label htmlFor="name">Email:</label>
             <input
-                name="Email"
+                name="email"
                 className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
-                placeholder='email' value={email} onChange={(e) => setEmail(e.target.value)}
+                placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)}
             />
             {/* {errors.name && <span>{errors.name.message}</span>} */}
+            <br />
+            <label htmlFor="phone">Phone:</label>
+            <input
+                name="phone"
+                className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
+                placeholder='Phone' value={phone} onChange={(e) =>setPhone(e.target.value)}
+            />
             <br />
             <button type="submit"
                 className='bg-blue-500 text-white px-4 py-2 rounded-lg text-center'

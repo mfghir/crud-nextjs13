@@ -20,11 +20,12 @@ import toast from 'react-hot-toast'
 interface userData {
   id: string,
   name: string,
-  email: string
+  email: string,
+  phone: string
 }
 
 const fetchUsers = async (editId: string) => {
-  return await axios.get(`https://652e19eff9afa8ef4b280a1d.mockapi.io/list/kdramalis/${editId}`)
+  return await axios.get(`https://652e19eff9afa8ef4b280a1d.mockapi.io/list/userlist/${editId}`)
     .then((res) => res.data)
     .catch((err) => {
       console.log("err", err);
@@ -36,7 +37,7 @@ const fetchUsers = async (editId: string) => {
 
 export default function TestEdit() {
   const [name, setName] = useState('');
-  // const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState('');
   const [id, setId] = useState('')
   const [email, setEmail] = useState('');
 
@@ -71,11 +72,13 @@ export default function TestEdit() {
   const getUpdateData = () => {
     setName(name)
     setEmail(email)
+    setPhone(phone)
     setId(id)
 
     updateUser({
       "name": name,
-      "email": email
+      "email": email,
+      "phone": phone
     })
     router.push('/')
   }
@@ -87,19 +90,27 @@ export default function TestEdit() {
     <form onSubmit={getUpdateData} className='flex flex-col justify-start gap-y-4 mt-4 w-80'>
       {/*  <div  className='flex flex-col justify-start gap-y-4 mt-4 w-80'> */}
       <label htmlFor="name">Name:</label>
-      <input
-        name="name"
-        className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
-        placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}
-      />
-      {/* {errors.name && <span>{errors.name.message}</span>} */}
-      <br />
-      <label htmlFor="name">Email:</label>
-      <input
-        name="Email"
-        className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
-        placeholder='email' value={email} onChange={(e) => setEmail(e.target.value)}
-      />
+            <input
+                name="name"
+                className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
+                placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}
+            />
+            {/* {errors.name && <span>{errors.name.message}</span>} */}
+            <br />
+            <label htmlFor="name">Email:</label>
+            <input
+                name="email"
+                className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
+                placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)}
+            />
+            {/* {errors.name && <span>{errors.name.message}</span>} */}
+            <br />
+            <label htmlFor="phone">Phone:</label>
+            <input
+                name="phone"
+                className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
+                placeholder='Phone' value={phone} onChange={(e) =>setPhone(e.target.value)}
+            />
       {/* {errors.name && <span>{errors.name.message}</span>} */}
       <br />
       <button type="submit"
