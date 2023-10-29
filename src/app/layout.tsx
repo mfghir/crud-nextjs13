@@ -1,12 +1,8 @@
-import { GlobalContextProvider } from '@/components/Provider'
+
 import './globals.css'
 import type { Metadata } from 'next'
-
 import { Inter } from 'next/font/google'
-// import {  UserProvider } from '@/components/context/UserContext'
-import { ContextContainer } from './context-container'
-// import { dehydrate, QueryClient } from "@tanstack/query-core";
-import { getUsers } from '@/lib/queries/getUsers'
+
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import ReactQueryProvider from '@/components/ReactQueryProvider'
 
@@ -28,20 +24,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} min-h-screen w-full overflow-x-scroll md:overflow-hidden px-6 py-8 lg:px-20 bg-gray-200`}>
         <ReactQueryProvider>
-
-          {/* <ContextContainer state={state}>
-        {children}
-          <ReactQueryDevtools initialIsOpen={false} />
-        </ContextContainer> */}
-          {/* <UserProvider> */}
-          {/* <GlobalContextProvider> */}
           {children}
           <ReactQueryDevtools initialIsOpen={false} />
-
-          {/* </GlobalContextProvider> */}
-          {/* </UserProvider> */}
         </ReactQueryProvider>
       </body>
     </html>

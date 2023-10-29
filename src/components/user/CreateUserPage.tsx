@@ -1,73 +1,133 @@
-"use client";
+"use client"
 
-// pages/users/create.tsx
-import { useContext, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { UserContext } from '../context/UserContext';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
+import * as Yup from 'yup'
 
-const CreateUserPage = () => {
-  const { dispatch } = useContext(UserContext);
-  const router = useRouter();
+import axios from 'axios'
+import { useParams, useRouter } from 'next/navigation'
+import { FormEvent, useState } from 'react'
+import toast from 'react-hot-toast'
+import { yupResolver } from '@hookform/resolvers/yup';
+// import { useQuery, useMutation } from 'react-query'
 
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required'),
+  phone: Yup.string().email('Invalid email').required('phone is required'),
+  email: Yup.string().required('email is required'),
+})
+
+interface userData {
+  id: string,
+  name: string,
+  email: string,
+  phone: string
+}
+
+
+
+export default function CreateUserPage() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Your create logic here
-    router.push('/');
-  };
+  const router = useRouter();
+  const queryClient = useQueryClient()
+
+  const { mutate: addNewUser, isError, isLoading } = useMutation((data: any) => {
+    return axios.post("https://652e19eff9afa8ef4b280a1d.mockapi.io/list/userlist", data)
+  }, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['list'])
+      toast.success('Successfully added!')
+      router.push('/')
+    }
+  })
+
+  const addUserHandler = () => {
+    setName(name)
+    setEmail(email)
+    setPhone(phone)
+
+    addNewUser({
+      "name": name,
+      "email": email,
+      "phone": phone
+    })
+    router.push('/')
+  }
+
+
+
+    const { register, handleSubmit, errors } = useForm<userData>({
+      resolver: yupResolver(validationSchema),
+    });
+  
+    const onSubmit = (data: FormValues) => {
+      addNewUser(data);
+    };
+
+  if (isError) return <div>Error</div>
+  if (isLoading) return <div>Loading...</div>
 
   return (
-    <div className="container mx-auto">
-      <h1 className="text-2xl font-bold my-4">Create User</h1>
-      <form onSubmit={handleSubmit} className="max-w-md">
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 font-semibold">
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 font-semibold">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="phone" className="block text-gray-700 font-semibold">
-            Phone
-          </label>
-          <input
-            type="text"
-            id="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-          />
-        </div>
-        <button
-          type="submit"
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
+    <section className='w-full '>
+      <form  onSubmit={handleSubmit(onSubmit)}
+      // onSubmit={addUserHandler} 
+      className='flex flex-col justify-start gap-y-4 mt-4 w-80'>
+        <label htmlFor="name">Name:</label>
+        <input
+              type="text"
+              id="name"
+              name="name"
+              ref={register}
+          // name="name"
+          className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
+          placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}
+        />
+            {errors.name && (
+          <p className="text-red-500">{errors.name.message}</p>
+        )}
+        <br />
+
+        <label htmlFor="name">Email:</label>
+        <input
+         type="text"
+         id="email"
+         name="email"
+         ref={register}
+          // name="email"
+          className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
+          placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)}
+        />
+          {errors.email && (
+          <p className="text-red-500">{errors.email.message}</p>
+        )}
+        <br />
+
+        <label htmlFor="phone">Phone:</label>
+        <input
+         type="text"
+         id="phone"
+         name="phone"
+         ref={register}
+          // name="phone"
+          className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
+          placeholder='Phone' value={phone} onChange={(e) => setPhone(e.target.value)}
+        />
+        {errors.phone && (
+          <p className="text-red-500">{errors.phone.message}</p>
+        )}
+        <br />
+        <button type="submit"
+          className='bg-blue-500 text-white px-4 py-2 rounded-lg text-center'
+
+        // disabled={isLoading}
         >
-          Create
+
+          Create Item
         </button>
       </form>
-    </div>
-  );
-};
-
-export default CreateUserPage;
+    </section>
+  )
+}

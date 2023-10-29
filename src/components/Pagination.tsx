@@ -1,7 +1,16 @@
-// import { getUsersTest } from "@/lib/testQuery";
-import { getUsersPaginated } from "@/lib/testQuery";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
+
+
+const getUsersPaginated = async (page: string | number) => {
+  const data = await fetch(`https://652e19eff9afa8ef4b280a1d.mockapi.io/list/userlist?page=${page}&limit=10`);
+  const res = await data.json();
+  // console.log(res);
+  return res;
+};
+
+
+
 
 const usePagination = () => {
   const router = useRouter();
