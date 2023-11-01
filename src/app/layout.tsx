@@ -24,7 +24,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen w-full overflow-x-scroll md:overflow-hidden px-6 py-8 lg:px-20 bg-gray-200`}>
+      <body className={`${inter.className} min-h-screen w-full overflow-x-scroll md:overflow-x-hidden px-6 py-8 lg:px-20 bg-gray-200`}>
         <ReactQueryProvider>
           {children}
           <ReactQueryDevtools initialIsOpen={false} />
