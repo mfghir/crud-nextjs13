@@ -1,16 +1,16 @@
 "use client"
 
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import * as Yup from 'yup'
 
 import axios from 'axios'
-import { useParams, useRouter } from 'next/navigation'
-import { FormEvent, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+
 import toast from 'react-hot-toast'
 import { yupResolver } from '@hookform/resolvers/yup'
-
-
+import Link from 'next/link'
 
 
 const validationSchema = Yup.object().shape({
@@ -28,13 +28,18 @@ type FormData = {
 
 
 export default function CreateUserPage() {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
+
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
 
   const router = useRouter();
   const queryClient = useQueryClient()
-
   const formOptions = { resolver: yupResolver(validationSchema) };
 
   const { mutate: addNewUser, isError, isLoading } = useMutation((data: any) => {
@@ -47,23 +52,21 @@ export default function CreateUserPage() {
     }
   })
 
-  const addUserHandler = () => {
-    // setName(name)
-    // setEmail(email)
-    // setPhone(phone)
+  // const addUserHandler = () => {
+  // setName(name)
+  // setEmail(email)
+  // setPhone(phone)
 
-    // addNewUser({
-    //   "name": name,
-    //   "email": email,
-    //   "phone": phone
-    // })
-    router.push('/')
-  }
-
+  // addNewUser({
+  //   "name": name,
+  //   "email": email,
+  //   "phone": phone
+  // })
+  // router.push('/')
+  // }
 
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>(formOptions);
-  console.log("---", errors);
 
   const onSubmit = (data: FormData) => {
     addNewUser(data);
@@ -75,20 +78,23 @@ export default function CreateUserPage() {
   if (isLoading) return <div>Loading...</div>
 
   return (
-    <section className='w-full '>
+    <section className='w-full mx-auto overflow-hidden'>
+      <Link href="/">
+        <button className='bg-red-300 text-white px-4 py-2 rounded-lg text-center'>Back</button>
+      </Link>
+      <h1 className="text-2xl font-bold text-gray-800 my-4">Create User</h1>
+
       <form onSubmit={handleSubmit(onSubmit)}
-        // onSubmit={addUserHandler} 
-        className='flex flex-col justify-start gap-y-4 mt-4 w-80'>
+        className='flex flex-col justify-start gap-y-4 w-full md:w-80 backdrop-blur-sm bg-white/30 p-4 rounded-lg'>
         <label htmlFor="name">Name:</label>
         <input
           type="text"
-          // id="name"
-          // name="name"
-          // ref={register.name}
+          id="name"
           {...register("name")}
-          // name="name"
           className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
-          placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}
+          placeholder='Name'
+          name='name'
+          value={user.name} onChange={changeHandler}
         />
         {errors.name && (
           <p className="text-red-500">{errors.name.message}</p>
@@ -98,13 +104,12 @@ export default function CreateUserPage() {
         <label htmlFor="name">Email:</label>
         <input
           type="text"
-          // id="email"
-          // name="email"
-          // ref={register.email}
+          id="email"
           {...register("email")}
-          // name="email"
           className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
-          placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)}
+          placeholder='Email'
+          name='email'
+          value={user.email} onChange={changeHandler}
         />
         {errors.email && (<p className="text-red-500">{errors.email.message}</p>)}
         <br />
@@ -112,13 +117,12 @@ export default function CreateUserPage() {
         <label htmlFor="phone">Phone:</label>
         <input
           type="text"
-          // id="phone"
-          // name="phone"
-          // ref={register.phone}
+          id="phone"
           {...register("phone")}
-          // name="phone"
           className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
-          placeholder='Phone' value={phone} onChange={(e) => setPhone(e.target.value)}
+          placeholder='Phone'
+          name="phone"
+          value={user.phone} onChange={changeHandler}
         />
         {errors.phone && (
           <p className="text-red-500">{errors.phone.message}</p>
@@ -126,11 +130,8 @@ export default function CreateUserPage() {
         <br />
         <button type="submit"
           className='bg-blue-500 text-white px-4 py-2 rounded-lg text-center'
-
         // disabled={isLoading}
-        >
-
-          Create Item
+        >Create Item
         </button>
       </form>
     </section>

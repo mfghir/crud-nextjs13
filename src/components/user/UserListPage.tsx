@@ -67,7 +67,7 @@ const UserListPage: NextPage = () => {
         <table className='border-collapse rounded-lg w-full my-6'>
           <thead className='bg-slate-100 rounded-lg '>
             <tr className='text-[15px]  text-left font-light text-slate-600'>
-              <th className='p-3 font-md'>Sn</th>
+              {/* <th className='p-3 font-md'>Sn</th> */}
               <th className='p-3 font-md'>Name</th>
               <th className='p-3 font-md'>Email</th>
               <th className='p-3 font-md'>Phone</th>
@@ -79,7 +79,7 @@ const UserListPage: NextPage = () => {
             {users?.map((user: userData) => {
               return (
                 <tr className='' key={user.id}>
-                  <td className='p-2 px-4 text-[13px]'>{user.id}</td>
+                  {/* <td className='p-2 px-4 text-[13px]'>{user.id}</td> */}
                   <td className='p-2 text-[13px]'>{user.name}</td>
                   <td className='p-2 text-[13px]'>{user.email}</td>
                   <td className='p-2 text-[13px]'>{user.phone}</td>
@@ -104,15 +104,15 @@ const UserListPage: NextPage = () => {
           <button
             // disabled={currentPage === 1}
             onClick={prevPage} disabled={page === 1}
-            className={`px-4 py-2 rounded-lg  font-semibold ${+page === 1 ? "bg-gray-400 cursor-not-allowed text-white" : "bg-blue-400 text-gray-800"} `}
+            className={`px-4 py-2 rounded-lg  font-semibold ${+page === 1 ? "bg-gray-300 cursor-not-allowed text-white" : "bg-blue-400 text-gray-800"} `}
           >
             prev page
           </button>
           <p className="mx-3 text-xl">{page}</p>
           <button
-            // disabled={users.length === 0}
+            // disabled={users.length < 10}
             onClick={nextPage}
-            className={`px-4 py-2 rounded-lg font-semibold ${users?.length >= 10 ? "bg-blue-400 text-gray-800" : "bg-gray-300 cursor-not-allowed text-white "} `}
+            className={`px-4 py-2 rounded-lg font-semibold ${users?.length < 10 ? "bg-gray-300 cursor-not-allowed text-white" : "bg-blue-400 text-gray-800"} `}
           >
             next page
           </button>

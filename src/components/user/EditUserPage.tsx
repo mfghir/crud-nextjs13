@@ -1,48 +1,29 @@
 "use client"
 
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import * as Yup from 'yup'
 
 import axios from 'axios'
-import { useParams, usePathname, useRouter } from 'next/navigation'
-import { FormEvent, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { useState } from 'react'
+
 import toast from 'react-hot-toast'
-// import { editUser } from '@/lib/testQuery'
-
-// import { useQuery, useMutation } from 'react-query'
-
-// const validationSchema = Yup.object().shape({
-//   name: Yup.string().required('Name is required'),
-//   phone: Yup.string().required('phone is required'),
-//   email: Yup.string().required('email is required'),
-// })
-
-type inpValue = {
-  name: string;
-  email: string;
-  phone: string;
-};
+import { yupResolver } from '@hookform/resolvers/yup'
+import Link from 'next/link'
 
 
-interface userData {
-  id: string,
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required').min(2, "name must have more length"),
+  email: Yup.string().required('email is required').email("Invalid email"),
+  phone: Yup.string().required('Phone is required').matches(/^09\d{2}\d{3}\d{4}$/, 'Please enter a valid Iranian phone number formatted as 09XX XXXX XXX')
+})
+
+type FormData = {
   name: string,
   email: string,
   phone: string
 }
-
-const fetchUsers = async (editId: string) => {
-  return await axios.get(`https://652e19eff9afa8ef4b280a1d.mockapi.io/list/userlist/${editId}`)
-    .then((res) => res.data)
-    .catch((err) => {
-      console.log("err", err);
-      throw err;
-    });
-
-}
-
-
 
 type userType = {
   name: string;
@@ -61,7 +42,7 @@ const editUser = async (user: userType) => {
   }
 }
 
-const EditUserPage =() => {
+const EditUserPage = () => {
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -76,6 +57,8 @@ const EditUserPage =() => {
   const router = useRouter();
   const queryClient = useQueryClient()
   const { editId } = useParams()
+
+  const formOptions = { resolver: yupResolver(validationSchema) };
 
 
 
@@ -116,6 +99,7 @@ const EditUserPage =() => {
 
 
   //user update  mutation
+
   const mutationUpdateUser = useMutation(editUser, {
     onSuccess: async () => {
       await queryClient.invalidateQueries(["users"]);
@@ -124,55 +108,84 @@ const EditUserPage =() => {
     },
   });
 
+  // const submitHandler = (e: React.MouseEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   mutationUpdateUser.mutate({
+  //     ...(user as inpValue),
+  //     id: editId as string,
+  //   });
+  // }
 
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>(formOptions);
 
-  const submitHandler = (e: React.MouseEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = () => {
     mutationUpdateUser.mutate({
-      ...(user as inpValue),
+      ...(user as FormData),
       id: editId as string,
     });
-  }
+    router.push('/')
+  };
+
+
 
   if (mutationUpdateUser.isError) return <div>Error</div>
   if (mutationUpdateUser.isLoading) return <div>Loading...</div>
 
   return (
-    <section className=''>
+    <section className='w-full mx-auto overflow-hidden'>
+      <Link href="/">
+        <button className='bg-red-300 text-white px-4 py-2 rounded-lg text-center'>Back</button>
+      </Link>
+      <h1 className="text-2xl font-bold text-gray-800 my-4">Edit User</h1>
 
-      <form onSubmit={submitHandler} className='flex flex-col justify-start gap-y-4 mt-4 w-80 '>
-        {/*  <div  className='flex flex-col justify-start gap-y-4 mt-4 w-80'> */}
+      <form onSubmit={handleSubmit(onSubmit)}
+        className='flex flex-col justify-start gap-y-4 w-full md:w-80 backdrop-blur-sm bg-white/30 p-4 rounded-lg'>
         <label htmlFor="name">Name:</label>
         <input
-          name="name"
+          type="text"
+          id="name"
+          {...register("name")}
           className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
-          placeholder='Name' value={user.name} onChange={changeHandler}
+          placeholder='Name'
+          name='name'
+          value={user.name} onChange={changeHandler}
         />
-        {/* {errors.name && <span>{errors.name.message}</span>} */}
+        {errors.name && (
+          <p className="text-red-500">{errors.name.message}</p>
+        )}
         <br />
+
         <label htmlFor="name">Email:</label>
         <input
-          name="email"
+          type="text"
+          id="email"
+          {...register("email")}
           className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
-          placeholder='Email' value={user.email} onChange={changeHandler}
+          placeholder='Email'
+          name='email'
+          value={user.email} onChange={changeHandler}
         />
-        {/* {errors.name && <span>{errors.name.message}</span>} */}
+        {errors.email && (<p className="text-red-500">{errors.email.message}</p>)}
         <br />
+
         <label htmlFor="phone">Phone:</label>
         <input
-          name="phone"
+          type="text"
+          id="phone"
+          {...register("phone")}
           className='px-2 py-2 rounded-lg outline-none border border-gray-200 focus:border-blue-500'
-          placeholder='Phone' value={user.phone} onChange={changeHandler}
+          placeholder='Phone'
+          name="phone"
+          value={user.phone} onChange={changeHandler}
         />
-        {/* {errors.name && <span>{errors.name.message}</span>} */}
+        {errors.phone && (
+          <p className="text-red-500">{errors.phone.message}</p>
+        )}
         <br />
         <button type="submit"
           className='bg-blue-500 text-white px-4 py-2 rounded-lg text-center'
-
         // disabled={isLoading}
-        >
-
-          Update Item
+        >Create Item
         </button>
       </form>
     </section>
