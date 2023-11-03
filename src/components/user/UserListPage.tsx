@@ -8,6 +8,8 @@ import { useQueryClient, useMutation } from '@tanstack/react-query'
 import toast, { Toaster } from 'react-hot-toast';
 import usePagination from "../Pagination";
 
+import { Dna } from 'react-loader-spinner'
+
 interface userData {
   id: string,
   name: string,
@@ -18,22 +20,7 @@ interface userData {
 
 const UserListPage: NextPage = () => {
   const queryClient = useQueryClient()
-
-  // const fetchUsers = async () => {
-  //   return await axios.get(`https://652e19eff9afa8ef4b280a1d.mockapi.io/list/userlist?_page=${currentPage}&_limit=10`)
-  //     .then((res) => res.data)
-  //     .catch((err) => {
-  //       console.log("err", err);
-  //       throw err;
-  //     });
-  // }
-
-
   const { isLoading, data: users, nextPage, prevPage, page } = usePagination();
-
-  //fetching the data
-  // const { data: users, isLoading } = useQuery<userData[]>(["list"], fetchUsers)
-  // console.log("users", users);
 
   //deleting the user
   const { mutate: deleteUser } = useMutation((id: any) => {
@@ -46,7 +33,18 @@ const UserListPage: NextPage = () => {
   })
 
 
-  if (isLoading) return <h1>Data is Loading</h1>
+  if (isLoading) {
+    // <div className="mx-auto">
+      <Dna
+        visible={true}
+        height="80"
+        width="80"
+        ariaLabel="dna-loading"
+        wrapperStyle={{}}
+        wrapperClass="dna-wrapper"
+      />
+    {/* </div> */}
+  }
 
 
   return (
@@ -67,7 +65,6 @@ const UserListPage: NextPage = () => {
         <table className='border-collapse rounded-lg w-full my-6'>
           <thead className='bg-slate-100 rounded-lg '>
             <tr className='text-[15px]  text-left font-light text-slate-600'>
-              {/* <th className='p-3 font-md'>Sn</th> */}
               <th className='p-3 font-md'>Name</th>
               <th className='p-3 font-md'>Email</th>
               <th className='p-3 font-md'>Phone</th>
@@ -75,11 +72,10 @@ const UserListPage: NextPage = () => {
             </tr>
           </thead>
 
-          <tbody className='bg-grey-200'>
+          <tbody className=''>
             {users?.map((user: userData) => {
               return (
                 <tr className='' key={user.id}>
-                  {/* <td className='p-2 px-4 text-[13px]'>{user.id}</td> */}
                   <td className='p-2 text-[13px]'>{user.name}</td>
                   <td className='p-2 text-[13px]'>{user.email}</td>
                   <td className='p-2 text-[13px]'>{user.phone}</td>
@@ -95,8 +91,7 @@ const UserListPage: NextPage = () => {
                   </td>
                 </tr>
               )
-            })
-            }
+            })}
           </tbody>
         </table>
 

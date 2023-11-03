@@ -1,14 +1,7 @@
 import CreateUserPage from '@/components/user/CreateUserPage'
-import React from 'react'
 
 const CreateUser = () => {
-  return (
-    <>
-    
-    <CreateUserPage />
-   
-    </>
-  )
+  return <CreateUserPage />
 }
 
 export default CreateUser

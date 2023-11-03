@@ -1,15 +1,7 @@
 import EditUserPage from "@/components/user/EditUserPage"
 
-
-
 const EditId = () => {
-  return (
-    <>
-      <EditUserPage />
-
-    </>
-
-  )
+  return <EditUserPage />
 }
 
 export default EditId
