@@ -29,7 +29,7 @@ export default function CreateUserPage() {
   const queryClient = useQueryClient()
 
   const { mutate: addNewUser, isError, isLoading } = useMutation((data: any) => {
-    return axios.post("https://652e19eff9afa8ef4b280a1d.mockapi.io/list/userlist", data)
+    return axios.post(`${process.env.API_KEY}/userlist`, data)
   }, {
     onSuccess: () => {
       queryClient.invalidateQueries(['list'])

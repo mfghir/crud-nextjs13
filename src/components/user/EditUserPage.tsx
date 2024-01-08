@@ -22,7 +22,7 @@ type UserType = {
 
 const editUser = async (user: UserType) => {
   try {
-    const response = await axios.put(`https://652e19eff9afa8ef4b280a1d.mockapi.io/list/userlist/${user.id}`, user);
+    const response = await axios.put(`${process.env.API_KEY}/userlist/${user.id}`, user);
     return response.data;
   } catch (error) {
     console.error('Error updating user:', error);

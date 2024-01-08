@@ -24,7 +24,7 @@ const UserListPage: NextPage = () => {
 
   //deleting the user
   const { mutate: deleteUser } = useMutation((id: any) => {
-    return axios.delete(`https://652e19eff9afa8ef4b280a1d.mockapi.io/list/userlist/${id}`)
+    return axios.delete(`${process.env.KEY_APP}/userlist/${id}`)
   }, {
     onSuccess: () => {
       queryClient.invalidateQueries(['list'])
@@ -35,15 +35,15 @@ const UserListPage: NextPage = () => {
 
   if (isLoading) {
     // <div className="mx-auto">
-      <Dna
-        visible={true}
-        height="80"
-        width="80"
-        ariaLabel="dna-loading"
-        wrapperStyle={{}}
-        wrapperClass="dna-wrapper"
-      />
-    {/* </div> */}
+    <Dna
+      visible={true}
+      height="80"
+      width="80"
+      ariaLabel="dna-loading"
+      wrapperStyle={{}}
+      wrapperClass="dna-wrapper"
+    />
+    {/* </div> */ }
   }
 
 
