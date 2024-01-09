@@ -29,7 +29,7 @@ export default function CreateUserPage() {
   const queryClient = useQueryClient()
 
   const { mutate: addNewUser, isError, isLoading } = useMutation((data: any) => {
-    return axios.post(`${process.env.API_KEY}/userlist`, data)
+    return axios.post(`${process.env.NEXT_PUBLIC_API_KEY}/userlist`, data)
   }, {
     onSuccess: () => {
       queryClient.invalidateQueries(['list'])

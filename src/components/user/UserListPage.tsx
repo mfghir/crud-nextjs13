@@ -24,7 +24,7 @@ const UserListPage: NextPage = () => {
 
   //deleting the user
   const { mutate: deleteUser } = useMutation((id: any) => {
-    return axios.delete(`${process.env.KEY_APP}/userlist/${id}`)
+    return axios.delete(`${process.env.NEXT_PUBLIC_API_KEY}/userlist/${id}`)
   }, {
     onSuccess: () => {
       queryClient.invalidateQueries(['list'])
@@ -48,8 +48,7 @@ const UserListPage: NextPage = () => {
 
 
   return (
-    <section className='w-full flex flex-col overflow-x-scroll md:overflow-hidden'>
-
+    <section className='w-full flex flex-col'>
       <div className="flex justify-between items-center w-full">
         <h1 className='font-bold text-center' >User Lists</h1>
         <Link href={`/create-user`}
@@ -60,7 +59,7 @@ const UserListPage: NextPage = () => {
 
       <h1 className='text-[21px] text-center m-2'>CURD with React Query</h1>
 
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full overflow-x-scroll lg:overflow-hidden">
 
         <table className='border-collapse rounded-lg w-full my-6'>
           <thead className='bg-slate-100 rounded-lg '>
@@ -99,7 +98,7 @@ const UserListPage: NextPage = () => {
           <button
             // disabled={currentPage === 1}
             onClick={prevPage} disabled={page === 1}
-            className={`px-4 py-2 rounded-lg  font-semibold ${+page === 1 ? "bg-gray-300 cursor-not-allowed text-white" : "bg-blue-400 text-gray-800"} `}
+            className={`px-4 py-2 rounded-lg  font-semibold ${+page === 1 ? "bg-gray-300 cursor-not-allowed text-gray-200" : "bg-blue-400 text-gray-800"} `}
           >
             prev page
           </button>
@@ -107,7 +106,7 @@ const UserListPage: NextPage = () => {
           <button
             // disabled={users.length < 10}
             onClick={nextPage}
-            className={`px-4 py-2 rounded-lg font-semibold ${users?.length < 10 ? "bg-gray-300 cursor-not-allowed text-white" : "bg-blue-400 text-gray-800"} `}
+            className={`px-4 py-2 rounded-lg font-semibold ${users?.length < 10 ? "bg-gray-300 cursor-not-allowed text-gray-200" : "bg-blue-400 text-gray-800"} `}
           >
             next page
           </button>
